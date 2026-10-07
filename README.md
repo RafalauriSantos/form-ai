@@ -1,6 +1,6 @@
-# Mini Market Decision Form
+# Form-AI
 
-Formulário web simples e responsivo para coletar decisões de negócio antes da implementação de um sistema.
+Form-AI é uma base de formulários web simples e responsiva para coletar decisões de negócio antes da implementação de um sistema.
 
 Este projeto nasceu durante o planejamento do PDV de um mini mercado. A cliente recebe um link, responde pelo celular e as respostas são armazenadas em um banco privado. O responsável pelo projeto recebe uma notificação resumida no Telegram.
 
