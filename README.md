@@ -2,6 +2,8 @@
 
 Form-AI é uma base de formulários web simples e responsiva para coletar decisões de negócio antes da implementação de um sistema.
 
+> **Status:** projeto em evolução. A versão atual é um MVP funcional usado em um caso real. A arquitetura, a interface e os recursos ainda podem mudar conforme novos testes e necessidades forem identificados.
+
 Este projeto nasceu durante o planejamento do PDV de um mini mercado. A cliente recebe um link, responde pelo celular e as respostas são armazenadas em um banco privado. O responsável pelo projeto recebe uma notificação resumida no Telegram.
 
 O objetivo é transformar perguntas de descoberta em decisões organizadas sem depender de Google Forms, Notion Forms ou de uma conta da pessoa que responde.
@@ -14,7 +16,7 @@ Formulário público de decisões do PDV:
 
 O mesmo Worker pode ser adaptado para outros formulários e outros projetos.
 
-## Recursos
+## Recursos atuais
 
 - layout responsivo para celular e desktop;
 - identificação obrigatória da pessoa que responde;
@@ -201,6 +203,8 @@ Retorna o estado básico do Worker.
 - não há integração fiscal, Stone ou WhatsApp neste microprojeto.
 
 ## Próximas evoluções
+
+Os itens abaixo são possibilidades planejadas, não recursos disponíveis na versão atual:
 
 1. painel privado para consultar respostas;
 2. exportação CSV;
