@@ -1,0 +1,12 @@
+name = "mini-mercado-decisions"
+main = "src/index.js"
+compatibility_date = "2026-10-07"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mini-mercado-decisions"
+database_id = "d6b98221-fc31-4283-8dbf-b759ac80cf43"
+migrations_dir = "migrations"
+
+[vars]
+# TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are configured as Worker secrets.
