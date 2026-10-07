@@ -1,65 +1,65 @@
 # Form-AI
 
-Form-AI é uma base de formulários web simples e responsiva para coletar decisões de negócio antes da implementação de um sistema.
+Form-AI is a simple, responsive web form foundation for collecting business decisions before implementing a system.
 
-> **Status:** projeto em evolução. A versão atual é um MVP funcional usado em um caso real. A arquitetura, a interface e os recursos ainda podem mudar conforme novos testes e necessidades forem identificados.
+> **Status:** project in evolution. The current version is a functional MVP used in a real case. Its architecture, interface, and features may change as new tests and needs are identified.
 
-Este projeto nasceu durante o planejamento do PDV de um mini mercado. A cliente recebe um link, responde pelo celular e as respostas são armazenadas em um banco privado. O responsável pelo projeto recebe uma notificação resumida no Telegram.
+This project was created during the planning of a mini market POS. The client receives a link, answers from a phone, and the responses are stored in a private database. The project owner receives a summarized Telegram notification.
 
-O objetivo é transformar perguntas de descoberta em decisões organizadas sem depender de Google Forms, Notion Forms ou de uma conta da pessoa que responde.
+The goal is to turn discovery questions into organized decisions without requiring Google Forms, Notion Forms, or an account for the person answering.
 
-## Demonstração
+## Demo
 
-Formulário público de decisões do PDV:
+Public POS decision form:
 
 <https://mini-mercado-decisions.mynder.workers.dev>
 
-O mesmo Worker pode ser adaptado para outros formulários e outros projetos.
+The same Worker can be adapted for other forms and projects.
 
-## Recursos atuais
+## Current features
 
-- layout responsivo para celular e desktop;
-- identificação obrigatória da pessoa que responde;
-- perguntas de múltipla escolha;
-- opção **Outra resposta** em cada pergunta;
-- campo de complemento associado à pergunta;
-- campo de observações gerais;
-- validação básica antes do envio;
-- confirmação visual após o envio;
-- armazenamento privado das respostas no Cloudflare D1;
-- notificação resumida no Telegram;
-- preservação da resposta mesmo quando a notificação falha;
-- endpoint de saúde para verificação operacional;
-- cache da página desativado para evitar formulário desatualizado.
+- responsive layout for mobile and desktop;
+- required respondent identification;
+- multiple-choice questions;
+- **Other answer** option for each question;
+- follow-up field associated with each question;
+- general notes field;
+- basic validation before submission;
+- visual confirmation after submission;
+- private response storage in Cloudflare D1;
+- summarized Telegram notification;
+- response preservation when notification delivery fails;
+- health endpoint for operational checks;
+- disabled page caching to prevent stale forms.
 
-## Como funciona
+## How it works
 
 ```text
-Pessoa responde pelo navegador
+Person answers the form in a browser
           |
           v
-Cloudflare Worker valida e recebe o JSON
+Cloudflare Worker validates and receives the JSON
           |
-          +--> Cloudflare D1 armazena a resposta
+          +--> Cloudflare D1 stores the response
           |
-          +--> Telegram envia uma notificação resumida
+          +--> Telegram sends a summarized notification
 ```
 
-O formulário público não expõe as respostas anteriores nem o restante do workspace do projeto. As respostas ficam no banco D1 associado ao Worker.
+The public form does not expose previous responses or the rest of the project's workspace. Responses remain in the D1 database associated with the Worker.
 
-## Arquitetura
+## Architecture
 
-- **HTML, CSS e JavaScript:** interface do formulário;
-- **Cloudflare Worker:** entrega a página, valida o envio e coordena as integrações;
-- **Cloudflare D1:** armazenamento das respostas;
-- **Telegram Bot API:** notificação opcional para o responsável.
+- **HTML, CSS, and JavaScript:** form interface;
+- **Cloudflare Worker:** serves the page, validates submissions, and coordinates integrations;
+- **Cloudflare D1:** response storage;
+- **Telegram Bot API:** optional notification for the project owner.
 
-Não há framework de frontend nesta versão. O formulário é pequeno o suficiente para funcionar com HTML, CSS e JavaScript nativos, reduzindo dependências e manutenção.
+This version has no frontend framework. The form is small enough to run with native HTML, CSS, and JavaScript, reducing dependencies and maintenance.
 
-## Estrutura
+## Repository structure
 
 ```text
-decision-form/
+form-ai/
 ├── migrations/
 │   └── 0001_responses.sql
 ├── src/
@@ -69,59 +69,59 @@ decision-form/
 └── wrangler.toml
 ```
 
-## Modelo de dados
+## Data model
 
-As respostas são armazenadas na tabela `responses`:
+Responses are stored in the `responses` table:
 
-| Campo | Descrição |
+| Field | Description |
 | --- | --- |
-| `id` | Identificador interno |
-| `created_at` | Data e hora do envio em UTC |
-| `payload` | Respostas em JSON |
-| `user_agent` | Navegador usado no envio |
+| `id` | Internal identifier |
+| `created_at` | Submission date and time in UTC |
+| `payload` | Responses as JSON |
+| `user_agent` | Browser used for the submission |
 
-O JSON contém o nome da pessoa, a resposta de cada pergunta, os complementos personalizados e a observação geral.
+The JSON contains the respondent's name, each answer, custom follow-ups, and general notes.
 
 ```json
 {
-  "client_name": "Nome da cliente",
-  "discounts": "Outra resposta",
-  "discounts_details": "Desconto somente em compras acima de determinado valor",
-  "offline": "Sim",
-  "notes": "Observação geral"
+  "client_name": "Client name",
+  "discounts": "Other answer",
+  "discounts_details": "Discounts only above a defined purchase amount",
+  "offline": "Yes",
+  "notes": "General note"
 }
 ```
 
-## Desenvolvimento local
+## Local development
 
-Pré-requisitos:
+Prerequisites:
 
 - Node.js;
 - Wrangler;
-- uma conta Cloudflare para usar D1 remoto.
+- a Cloudflare account when using remote D1.
 
-Para iniciar o Worker localmente:
+Start the Worker locally:
 
 ```bash
 npx wrangler dev
 ```
 
-Para verificar a sintaxe antes de publicar:
+Check the syntax before deployment:
 
 ```bash
 node --check src/index.js
 ```
 
-O arquivo `wrangler.toml` aponta para o banco D1 usado pelo ambiente remoto. Não inclua tokens ou segredos no repositório.
+The `wrangler.toml` file points to the D1 database used by the remote environment. Do not include tokens or secrets in the repository.
 
-## Banco e migrations
+## Database and migrations
 
 ```bash
 npx wrangler d1 create mini-mercado-decisions
 npx wrangler d1 migrations apply mini-mercado-decisions --remote
 ```
 
-Consultar respostas remotamente:
+Query remote responses:
 
 ```bash
 npx wrangler d1 execute mini-mercado-decisions \
@@ -131,36 +131,36 @@ npx wrangler d1 execute mini-mercado-decisions \
 
 ## Secrets
 
-As notificações do Telegram usam secrets do Worker:
+Telegram notifications use Worker secrets:
 
 ```bash
 npx wrangler secret put TELEGRAM_BOT_TOKEN
 npx wrangler secret put TELEGRAM_CHAT_ID
 ```
 
-Os valores não devem ser colocados no `wrangler.toml`, no código ou em commits.
+Values must not be placed in `wrangler.toml`, source code, or commits.
 
-## Deploy
+## Deployment
 
-Validar o pacote sem publicar:
+Validate the package without publishing:
 
 ```bash
 npx wrangler deploy --dry-run
 ```
 
-Publicar:
+Deploy:
 
 ```bash
 npx wrangler deploy
 ```
 
-Verificar a aplicação publicada:
+Check the deployed application:
 
 ```bash
 curl https://mini-mercado-decisions.mynder.workers.dev/health
 ```
 
-Resposta esperada:
+Expected response:
 
 ```json
 {"ok":true,"service":"mini-mercado-decisions"}
@@ -170,64 +170,64 @@ Resposta esperada:
 
 ### `GET /`
 
-Entrega o formulário público.
+Serves the public form.
 
 ### `POST /api/responses`
 
-Recebe as respostas em JSON, valida o nome da pessoa, grava o registro no D1 e tenta enviar a notificação ao Telegram.
+Receives the response JSON, validates the respondent name, stores the record in D1, and attempts to send a Telegram notification.
 
 ### `GET /health`
 
-Retorna o estado básico do Worker.
+Returns the basic Worker health status.
 
-## Privacidade e segurança
+## Privacy and security
 
-- o formulário público permite envio, mas não consulta respostas;
-- as respostas não são exibidas na página pública;
-- tokens ficam configurados como secrets da Cloudflare;
-- o endpoint rejeita JSON inválido e payloads excessivos;
-- a resposta é armazenada antes da tentativa de notificação;
-- observações podem conter dados pessoais e devem ser tratadas como privadas;
-- o banco não deve ser exposto diretamente ao público;
-- o link do formulário deve ser compartilhado apenas com as pessoas necessárias.
+- the public form accepts submissions but does not expose previous responses;
+- responses are not displayed on the public page;
+- tokens are configured as Cloudflare secrets;
+- the endpoint rejects invalid JSON and oversized payloads;
+- the response is stored before notification delivery is attempted;
+- notes may contain personal data and must be treated as private;
+- the database must not be exposed directly to the public;
+- the form link should be shared only with the intended respondents.
 
-## Limitações atuais
+## Current limitations
 
-- não há painel administrativo web;
-- a consulta das respostas é feita pelo D1/Wrangler;
-- o Telegram é uma notificação opcional, não o armazenamento principal;
-- não há edição da resposta depois do envio;
-- não há autenticação de administrador na interface;
-- o formulário atual é definido no código;
-- não há construtor visual de formulários;
-- não há integração fiscal, Stone ou WhatsApp neste microprojeto.
+- no web administration panel;
+- responses are queried through D1/Wrangler;
+- Telegram is an optional notification channel, not the primary storage;
+- submitted responses cannot currently be edited;
+- no administrator authentication in the interface;
+- the current form is defined in source code;
+- no visual form builder;
+- no tax, Stone, or WhatsApp integration in this microproject.
 
-## Próximas evoluções
+## Planned evolution
 
-Os itens abaixo são possibilidades planejadas, não recursos disponíveis na versão atual:
+The following are planned possibilities, not available features in the current version:
 
-1. painel privado para consultar respostas;
-2. exportação CSV;
-3. edição ou correção controlada de respostas;
-4. templates de formulários;
-5. construtor de perguntas orientado por IA;
-6. API ou MCP para criar formulários por linguagem natural;
-7. autenticação e permissões para múltiplos projetos.
+1. private response dashboard;
+2. CSV export;
+3. controlled response editing or correction;
+4. form templates;
+5. AI-assisted question builder;
+6. API or MCP for creating forms through natural language;
+7. authentication and permissions for multiple projects.
 
-## Decisões técnicas
+## Technical decisions
 
-### Por que não usar uma plataforma externa?
+### Why not use an external platform?
 
-O formulário precisava ser simples, público e rápido para a cliente responder. A implementação própria evita criar contas em várias plataformas, reduz dependências e permite controlar o armazenamento e o formato das respostas.
+The form needed to be simple, public, and quick for the client to answer. A custom implementation avoids creating accounts on multiple platforms, reduces dependencies, and keeps control over response storage and format.
 
-### Por que não usar um framework frontend?
+### Why not use a frontend framework?
 
-O fluxo atual é uma única página com poucas interações. HTML, CSS e JavaScript nativos atendem ao objetivo com menor superfície de manutenção. Um framework pode ser avaliado se o projeto ganhar painel, autenticação ou múltiplos tipos de formulário.
+The current flow is a single page with limited interactions. Native HTML, CSS, and JavaScript meet the goal with a smaller maintenance surface. A framework can be evaluated if the project gains an administration panel, authentication, or multiple form types.
 
-### Por que Cloudflare Worker e D1?
+### Why use Cloudflare Workers and D1?
 
-O Worker entrega a página e a API no mesmo projeto, enquanto o D1 oferece armazenamento SQL próximo da aplicação. Isso mantém a infraestrutura pequena e permite evoluir o formulário sem introduzir um servidor tradicional.
+The Worker serves the page and API in the same project, while D1 provides SQL storage close to the application. This keeps the infrastructure small and allows the form to evolve without introducing a traditional server.
 
-## Autoria
+## Author
 
-Projeto pessoal de **Rafael Lauri**, criado como apoio ao planejamento do Sistema Mini Mercado e como base para futuros formulários orientados por IA.
+Personal project by **Rafael Lauri**, created to support the planning of the Mini Market System and serve as a foundation for future AI-oriented forms.
