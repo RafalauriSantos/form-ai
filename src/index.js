@@ -2,7 +2,6 @@ const FORM_TITLE = 'Informações sobre a máquina Stone — Mini Mercado';
 
 const QUESTIONS = [
   ['terminal_model', 'Qual é o modelo da sua máquina Stone?', ['L400', 'S920', 'Q92', 'Outro modelo', 'Não consegui encontrar']],
-  ['terminal_photo', 'Você conseguiu encontrar o modelo na etiqueta ou na tela “Sobre” da máquina?', ['Sim, encontrei', 'Não encontrei', 'Ainda vou verificar']],
   ['pos_connect', 'No menu da máquina aparece “POS Connect” ou “Aguardando pagamentos”?', ['Sim', 'Não', 'Não encontrei', 'Não tenho certeza']],
   ['pix_confirmation', 'Você confirmou que já recebe pagamentos por Pix nessa máquina. Está correto?', ['Sim', 'Não', 'Preciso corrigir essa informação']],
   ['internet_connection', 'Como a máquina se conecta à internet?', ['Wi-Fi', 'Chip da própria máquina', 'Wi-Fi e chip', 'Não sei']],
